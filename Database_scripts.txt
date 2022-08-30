@@ -1,0 +1,92 @@
+-- Table: public.vendor_details
+
+-- DROP TABLE IF EXISTS public.vendor_details;
+
+CREATE TABLE IF NOT EXISTS public.vendor_details
+(
+    user_id Serial NOT NULL ,
+    email character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    online_status boolean DEFAULT false,
+    CONSTRAINT vendor_details_pkey PRIMARY KEY (user_id),
+    CONSTRAINT vendor_details_email_key UNIQUE (email)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.vendor_details
+    OWNER to postgres;
+
+<------------------------------------------------------------------------------------------------------------------------->
+
+-- Table: public.client
+
+-- DROP TABLE IF EXISTS public.client;
+
+CREATE TABLE IF NOT EXISTS public.client
+(
+    email character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT client_pkey PRIMARY KEY (email)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.client
+    OWNER to postgres;
+
+
+<------------------------------------------------------------------------------------------------------------------------->
+
+-- Table: public.session
+
+-- DROP TABLE IF EXISTS public.session;
+
+CREATE TABLE IF NOT EXISTS public.session
+(
+    sname character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    client_email character varying(255) COLLATE pg_catalog."default",
+    vendor_email character varying(255) COLLATE pg_catalog."default",
+    waiting boolean DEFAULT true,
+    CONSTRAINT session_pkey PRIMARY KEY (sname),
+    CONSTRAINT session_client_email_fkey FOREIGN KEY (client_email)
+        REFERENCES public.client (email) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.session
+    OWNER to postgres;
+
+<------------------------------------------------------------------------------------------------------------------------->
+
+-- Table: public.rating
+
+-- DROP TABLE IF EXISTS public.rating;
+
+CREATE TABLE IF NOT EXISTS public.rating
+(
+    sname character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    vendor_email character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    client_email character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    score integer NOT NULL,
+    CONSTRAINT rating_pkey PRIMARY KEY (sname, vendor_email),
+    CONSTRAINT rating_client_email_fkey FOREIGN KEY (client_email)
+        REFERENCES public.client (email) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT rating_sname_fkey FOREIGN KEY (sname)
+        REFERENCES public.session (sname) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT rating_vendor_email_fkey FOREIGN KEY (vendor_email)
+        REFERENCES public.vendor_details (email) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.rating
+    OWNER to postgres;
