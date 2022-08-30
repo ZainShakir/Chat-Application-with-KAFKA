@@ -12,3 +12,8 @@ This Chat Application is developed in React Native with PostgreSQL as Database .
  Run the database Scripts to create the Database.
  
 Note:Change The IPv4 address in all the Api's in the Chat App folder in all the screens according to your own network ipv4 private ip address
+
+
+#Figma Link
+
+https://www.figma.com/file/gy1DdAvMn3YgPItMj5TLo8/Mobile-App
